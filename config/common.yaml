@@ -1,0 +1,29 @@
+rest:
+  listen_address: 0.0.0.0
+  listen_port: 8080
+  allow_origins:
+    - "*"
+  allow_headers:
+    - Origin
+    - Authorization
+    - Access-Control-Allow-Origin
+    - Content-Type
+  expose_headers:
+    - Content-Length
+    - Access-Control-Allow-Origin
+
+database:
+  dialect: postgres
+  user: postgres
+  password: postgres
+  host: 127.0.0.1
+  port: 5432
+  db_name: postgres
+  max_open_conns: 16
+  max_idle_conns: -1
+  max_life_time: 600
+  rate_limit_interval_seconds: 1
+  rate_limit_requests_per_second: 50
+
+ethereum:
+  endpoint: https://data-seed-prebsc-2-s3.binance.org:8545/
