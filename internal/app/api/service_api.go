@@ -96,7 +96,7 @@ func (s *apiService) registerMiddleware(cfg *config.Config, e *gin.Engine) {
 		// storage
 		ratelimit.InMemoryStore(&ratelimit.InMemoryOptions{
 			Rate:  time.Duration(cfg.Rest.RateLimitIntervalSeconds) * time.Second,
-			Limit: cfg.Rest.RateLimitRequestPerSecond,
+			Limit: uint(cfg.Rest.RateLimitRequestPerSecond),
 		}),
 		// options
 		&ratelimit.Options{
@@ -126,6 +126,6 @@ func (s *apiService) registerPublicRoutes(e *gin.Engine) {
 	e.GET("/blocks", s.in.BlockController.GetLatestBlocks)
 	// GET /blocks/:id
 	e.GET("/blocks/:id", s.in.BlockController.GetBlockDetail)
-	// GET /transactions/:txHash
-	e.GET("/transactions/:txHash", s.in.TransactionController.GetTransactionDetail)
+	// GET /transaction/:txHash
+	e.GET("/transaction/:txHash", s.in.TransactionController.GetTransactionDetail)
 }

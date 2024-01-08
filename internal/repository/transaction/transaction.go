@@ -29,7 +29,7 @@ func (t *transactionRepo) GetTransactions(ctx context.Context, blockNum uint64) 
 func (t *transactionRepo) GetTransactionDetail(ctx context.Context, txHash string) (*po.Transaction, error) {
 	var res po.Transaction
 
-	if err := t.in.RDB.Where("tx_hash = ?", txHash).Preload("Logs").First(&res).Error; err != nil {
+	if err := t.in.RDB.Where("hash = ?", txHash).Preload("Logs").First(&res).Error; err != nil {
 		return nil, errors.WithStack(err)
 	}
 

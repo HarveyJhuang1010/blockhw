@@ -11,6 +11,8 @@ rest:
   expose_headers:
     - Content-Length
     - Access-Control-Allow-Origin
+  rate_limit_interval_seconds: 1
+  rate_limit_requests_per_second: 50
 
 database:
   dialect: postgres
@@ -22,8 +24,6 @@ database:
   max_open_conns: 16
   max_idle_conns: -1
   max_life_time: 600
-  rate_limit_interval_seconds: 1
-  rate_limit_requests_per_second: 50
 
 ethereum:
   endpoint: https://data-seed-prebsc-2-s3.binance.org:8545/

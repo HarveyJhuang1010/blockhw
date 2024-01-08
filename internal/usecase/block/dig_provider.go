@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/HarveyJhuang1010/blockhw/internal/models/bo"
+	"github.com/HarveyJhuang1010/blockhw/internal/wrapper/evmcli"
 	"go.uber.org/dig"
 )
 
@@ -26,7 +27,8 @@ func NewBlockUseCase(in digIn) digOut {
 type digIn struct {
 	dig.In
 
-	Repo bo.BlockRepo
+	Repo      bo.BlockRepo
+	EvmClient *evmcli.EVMClient
 }
 
 type packet struct {

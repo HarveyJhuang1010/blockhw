@@ -62,7 +62,7 @@ type RestConfig struct {
 	ExposeHeaders             []string `mapstructure:"expose_headers"`
 	AllowMethods              []string `mapstructure:"allow_methods"`
 	RateLimitIntervalSeconds  int      `mapstructure:"rate_limit_interval_seconds"`
-	RateLimitRequestPerSecond uint     `mapstructure:"rate_limit_requests_per_second"`
+	RateLimitRequestPerSecond int      `mapstructure:"rate_limit_requests_per_second"`
 }
 
 type DatabaseConfig struct {

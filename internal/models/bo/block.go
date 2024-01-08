@@ -11,11 +11,13 @@ import (
 type BlockRepo interface {
 	GetLatestBlocks(ctx context.Context, limit int) ([]*po.Block, error)
 	GetBlockDetail(ctx context.Context, blockNum uint64) (*po.Block, error)
+	CreateBlock(ctx context.Context, block *po.Block) error
 }
 
 type BlockUseCase interface {
 	GetLatestBlocks(ctx context.Context, limit int) (*dto.BlockListResp, error)
 	GetBlockDetail(ctx context.Context, blockNum uint64) (*dto.BlockDetail, error)
+	SyncBlockByNum(ctx context.Context, blockNum uint64) error
 }
 
 type BlockController interface {

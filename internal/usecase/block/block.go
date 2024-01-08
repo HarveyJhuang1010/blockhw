@@ -2,9 +2,14 @@ package block
 
 import (
 	"context"
+	"encoding/hex"
+	"math/big"
 
 	"github.com/HarveyJhuang1010/blockhw/internal/models/bo"
 	"github.com/HarveyJhuang1010/blockhw/internal/models/dto"
+	"github.com/HarveyJhuang1010/blockhw/internal/models/po"
+	"github.com/ethereum/go-ethereum/core"
+	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/jinzhu/copier"
 	"github.com/pkg/errors"
 )
@@ -50,9 +55,73 @@ func (b *blockUseCase) GetBlockDetail(ctx context.Context, blockNum uint64) (*dt
 		return nil, errors.Wrap(err, "copy block detail")
 	}
 
+	res.Transactions = []string{}
 	for _, tx := range block.Transactions {
 		res.Transactions = append(res.Transactions, tx.Hash)
 	}
 
 	return &res, nil
+}
+
+func (b *blockUseCase) SyncBlockByNum(ctx context.Context, blockNum uint64) error {
+	bn := big.NewInt(int64(blockNum))
+	block, err := b.in.EvmClient.BlockByNumber(ctx, bn)
+	if err != nil {
+		return errors.Wrap(err, "get block by number")
+	}
+
+	poBlock := &po.Block{
+		Number:     block.Number().Uint64(),
+		Hash:       block.Hash().String(),
+		ParentHash: block.ParentHash().String(),
+		Time:       block.Time(),
+	}
+
+	chainID, err := b.in.EvmClient.NetworkID(ctx)
+	if err != nil {
+		return errors.Wrap(err, "get network id")
+	}
+
+	var txns []*po.Transaction
+	for _, txn := range block.Transactions() {
+		msg, err := core.TransactionToMessage(txn, types.LatestSignerForChainID(chainID), nil)
+		if err != nil {
+			return errors.Wrap(err, "get message")
+		}
+
+		tr, err := b.in.EvmClient.TransactionReceipt(ctx, txn.Hash())
+		if err != nil {
+			return errors.Wrap(err, "get transaction receipt")
+		}
+
+		var logs []*po.TransactionLog
+		for _, l := range tr.Logs {
+			logs = append(logs, &po.TransactionLog{
+				TransactionHash: l.TxHash.String(),
+				Index:           l.Index,
+				Data:            hex.EncodeToString(l.Data),
+			})
+		}
+
+		poTxn := &po.Transaction{
+			Hash:        txn.Hash().String(),
+			From:        msg.From.String(),
+			To:          txn.To().String(),
+			Nonce:       txn.Nonce(),
+			Data:        hex.EncodeToString(txn.Data()),
+			Value:       txn.Value().String(),
+			BlockNumber: blockNum,
+			Logs:        logs,
+		}
+
+		txns = append(txns, poTxn)
+	}
+
+	poBlock.Transactions = txns
+
+	if err := b.in.Repo.CreateBlock(ctx, poBlock); err != nil {
+		return errors.Wrap(err, "create block")
+	}
+
+	return nil
 }
