@@ -54,7 +54,7 @@ func (w *workflowListener) Listen(ctx context.Context) {
 			return
 
 		default:
-			msgs, err := sub.Fetch(1)
+			msgs, err := sub.Fetch(int(config.GetConfig().Worker.MaxWorkers))
 			if errors.Is(err, nats.ErrTimeout) {
 				continue
 			}
@@ -62,19 +62,22 @@ func (w *workflowListener) Listen(ctx context.Context) {
 				logger.Error("failed to fetch workflow event", zap.Error(err))
 				panic(err)
 			}
-			msg := msgs[0]
 
-			if ok := w.queue.TryAcquire(1); !ok {
-				logger.Warn("queue is full, failed to acquire semaphore, redeliver message later")
-				delayTime := time.Duration(config.GetConfig().Worker.DelayMinute) * time.Minute
-				msg.NakWithDelay(delayTime)
-				continue
+			for i, _ := range msgs {
+				msg := msgs[i]
+
+				if ok := w.queue.TryAcquire(1); !ok {
+					logger.Warn("queue is full, failed to acquire semaphore, redeliver message later")
+					delayTime := time.Duration(config.GetConfig().Worker.DelayMinute) * time.Minute
+					msg.NakWithDelay(delayTime)
+					continue
+				}
+
+				go func(m bo.NatsMsg) {
+					defer w.queue.Release(1)
+					w.handleMessage(ctx, m)
+				}(msg)
 			}
-
-			go func(m bo.NatsMsg) {
-				defer w.queue.Release(1)
-				w.handleMessage(ctx, m)
-			}(msg)
 		}
 	}
 }

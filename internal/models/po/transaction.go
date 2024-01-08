@@ -7,7 +7,7 @@ type Transaction struct {
 	To          string            `gorm:"column:to;type:varchar(43)" json:"to"`
 	Nonce       uint64            `gorm:"column:nonce;type:uint" json:"nonce"`
 	Data        string            `gorm:"column:data;type:text" json:"data"`
-	Value       string            `gorm:"column:value;type:varchar(18)" json:"value"`
+	Value       string            `gorm:"column:value;type:varchar(67)" json:"value"`
 	BlockNumber uint64            `gorm:"column:block_number;type:uint"`
 	Logs        []*TransactionLog `gorm:"foreignKey:TransactionHash;references:Hash;constraint:OnUpdate:CASCADE,OnDelete:CASCADE" json:"logs"`
 }

@@ -11,7 +11,7 @@ type Block struct {
 
 type BlockSyncRecord struct {
 	Base
-	Number uint64 `gorm:"column:number;type:uint;primaryKey" json:"block_number"`
+	Number uint64 `gorm:"column:number;type:uint;primaryKey"`
 	// created, synced, confirmed
-	Status string `gorm:"column:status;type:varchar(10)" json:"status"`
+	Status string `gorm:"column:status;type:varchar(10)"`
 }

@@ -27,7 +27,7 @@ func newBlockSyncTask(in digIn) bo.CronTask {
 
 func (t *blockSyncTask) Schedule() string {
 	//return "0 */3 * * * *" // 3 minutes for test
-	return "*/10 * * * * *"
+	return "0 * * * * *"
 }
 
 func (t *blockSyncTask) Run() {

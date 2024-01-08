@@ -103,13 +103,20 @@ func (b *blockUseCase) SyncBlockByNum(ctx context.Context, blockNum uint64) erro
 			})
 		}
 
+		var to, value string
+		if txn.To() != nil {
+			to = txn.To().String()
+		}
+		if txn.Value() != nil {
+			value = txn.Value().String()
+		}
 		poTxn := &po.Transaction{
 			Hash:        txn.Hash().String(),
 			From:        msg.From.String(),
-			To:          txn.To().String(),
+			To:          to,
 			Nonce:       txn.Nonce(),
 			Data:        hex.EncodeToString(txn.Data()),
-			Value:       txn.Value().String(),
+			Value:       value,
 			BlockNumber: blockNum,
 			Logs:        logs,
 		}
@@ -119,7 +126,7 @@ func (b *blockUseCase) SyncBlockByNum(ctx context.Context, blockNum uint64) erro
 
 	poBlock.Transactions = txns
 
-	if err := b.in.Repo.CreateBlock(ctx, poBlock); err != nil {
+	if err := b.in.Repo.SyncBlock(ctx, poBlock); err != nil {
 		return errors.Wrap(err, "create block")
 	}
 

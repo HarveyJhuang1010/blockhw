@@ -11,9 +11,10 @@ import (
 type BlockRepo interface {
 	GetLatestBlocks(ctx context.Context, limit int) ([]*po.Block, error)
 	GetBlockDetail(ctx context.Context, blockNum uint64) (*po.Block, error)
-	CreateBlock(ctx context.Context, block *po.Block) error
+	SyncBlock(ctx context.Context, block *po.Block) error
 	SaveBlockSyncRecord(ctx context.Context, record *po.BlockSyncRecord) error
 	GetBlockSyncRecord(ctx context.Context, blockNum uint64) (*po.BlockSyncRecord, error)
+	GetUnConfirmedRecord(ctx context.Context, blockNum uint64) ([]*po.BlockSyncRecord, error)
 }
 
 type BlockUseCase interface {
