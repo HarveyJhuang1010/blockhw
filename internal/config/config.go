@@ -25,6 +25,7 @@ func rootDir() string {
 
 func NewConfig() *Config {
 	viper.AddConfigPath(path.Join(rootDir(), "config"))
+	viper.AddConfigPath("/blockhw/config")
 	viper.SetConfigName("common")
 	viper.SetConfigType("yaml")
 	if err := viper.ReadInConfig(); err != nil {

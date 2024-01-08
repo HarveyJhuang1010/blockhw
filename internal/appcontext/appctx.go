@@ -20,16 +20,12 @@ type AppContext struct {
 }
 
 func New(ctx context.Context) AppContext {
-	return AppContext{
+	appCtx := AppContext{
 		Context: ctx,
 	}
-}
 
-func GetContext() context.Context {
-	if defaultContext.Context == nil {
-		defaultContext = New(context.Background())
-	}
-	return defaultContext
+	defaultContext = appCtx
+	return appCtx
 }
 
 func (c *AppContext) getRawContext() context.Context {

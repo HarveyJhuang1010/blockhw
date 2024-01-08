@@ -74,7 +74,6 @@ func (s *apiService) createService() {
 	// Create our HTTP Router
 	e := gin.New()
 	cfg := config.GetConfig()
-	logger := appcontext.GetLogger()
 
 	// health check
 	e.GET("/", func(ctx *gin.Context) {
@@ -82,13 +81,13 @@ func (s *apiService) createService() {
 	})
 
 	// Register Handlers, Middleware, and API Modules
-	s.registerMiddleware(cfg, e, logger)
+	s.registerMiddleware(cfg, e)
 	s.registerPublicRoutes(e)
 
 	s.handler = e
 }
 
-func (s *apiService) registerMiddleware(cfg *config.Config, e *gin.Engine, l *zap.Logger) {
+func (s *apiService) registerMiddleware(cfg *config.Config, e *gin.Engine) {
 	e.Use(
 		gin.Recovery(),
 	)
@@ -124,6 +123,9 @@ func (s *apiService) registerMiddleware(cfg *config.Config, e *gin.Engine, l *za
 
 func (s *apiService) registerPublicRoutes(e *gin.Engine) {
 	// GET /blocks?limit=n
+	e.GET("/blocks", s.in.BlockController.GetLatestBlocks)
 	// GET /blocks/:id
+	e.GET("/blocks/:id", s.in.BlockController.GetBlockDetail)
 	// GET /transactions/:txHash
+	e.GET("/transactions/:txHash", s.in.TransactionController.GetTransactionDetail)
 }

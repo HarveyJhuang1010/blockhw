@@ -25,6 +25,9 @@ func NewService(in digIn) digOut {
 
 type digIn struct {
 	dig.In
+
+	BlockController       bo.BlockController
+	TransactionController bo.TransactionController
 }
 
 type packet struct {
