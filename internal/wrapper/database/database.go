@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/HarveyJhuang1010/blockhw/internal/config"
+	"github.com/HarveyJhuang1010/blockhw/internal/models/po"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
 )
@@ -111,4 +112,12 @@ func (d *DB) connect() (db *gorm.DB, err error) {
 	sql.SetConnMaxLifetime(time.Duration(d.config.MaxLifetime) * time.Second)
 
 	return
+}
+
+func AutoMigrate() error {
+	return defaultDB.AutoMigrate(
+		&po.Block{},
+		&po.Transaction{},
+		&po.TransactionLog{},
+	)
 }

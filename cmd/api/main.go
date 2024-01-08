@@ -32,6 +32,10 @@ func main() {
 	database.Initialize(cfg.Database)
 	evmcli.Initialize(cfg.Ethereum)
 
+	if err := database.AutoMigrate(); err != nil {
+		panic(err)
+	}
+
 	binder := binderApi.New()
 	if err := binder.Invoke(api.RunServer); err != nil {
 		panic(err)
