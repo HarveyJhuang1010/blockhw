@@ -32,7 +32,7 @@ func newApiService(in digIn) bo.Service {
 }
 
 func (s *apiService) Run(ctx context.Context, stop context.CancelFunc) {
-	logger := appcontext.GetLogger(ctx)
+	logger := appcontext.GetLogger()
 
 	defer func() {
 		if r := recover(); r != nil {
@@ -56,7 +56,7 @@ func (s *apiService) Run(ctx context.Context, stop context.CancelFunc) {
 }
 
 func (s *apiService) Shutdown(ctx context.Context, wg *sync.WaitGroup) {
-	logger := appcontext.GetLogger(ctx)
+	logger := appcontext.GetLogger()
 
 	ctxT, cancel := context.WithTimeout(ctx, 5*time.Second /*replace with config*/)
 	defer func() {
@@ -74,8 +74,7 @@ func (s *apiService) createService() {
 	// Create our HTTP Router
 	e := gin.New()
 	cfg := config.GetConfig()
-	ctx := appcontext.GetContext()
-	logger := appcontext.GetLogger(ctx)
+	logger := appcontext.GetLogger()
 
 	// health check
 	e.GET("/", func(ctx *gin.Context) {

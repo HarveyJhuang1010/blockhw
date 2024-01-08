@@ -29,7 +29,7 @@ func RunServer(app app) {
 	})
 
 	ctx := context.Background()
-	logger := appcontext.GetLogger(ctx)
+	logger := appcontext.GetLogger()
 	sCtx, stop := signal.NotifyContext(
 		ctx,
 		syscall.SIGINT,

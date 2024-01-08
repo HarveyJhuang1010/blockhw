@@ -41,8 +41,8 @@ func SetLogger(logger *zap.Logger) context.Context {
 	return defaultContext
 }
 
-func GetLogger(ctx context.Context) *zap.Logger {
-	val := ctx.Value(defaultLoggerKey)
+func GetLogger() *zap.Logger {
+	val := defaultContext.Value(defaultLoggerKey)
 
 	v, ok := val.(*zap.Logger)
 	if !ok {
