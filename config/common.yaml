@@ -27,3 +27,12 @@ database:
 
 ethereum:
   endpoint: https://data-seed-prebsc-2-s3.binance.org:8545/
+
+worker:
+  start_number: 1
+  delay_minute: 1
+  max_workers: 5
+
+nats:
+  host: 127.0.0.1
+  client_port: 4222

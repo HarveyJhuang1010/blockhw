@@ -28,6 +28,10 @@ func New(ctx context.Context) AppContext {
 	return appCtx
 }
 
+func GetContext() AppContext {
+	return defaultContext
+}
+
 func (c *AppContext) getRawContext() context.Context {
 	return c.Context
 }

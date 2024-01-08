@@ -119,5 +119,6 @@ func AutoMigrate() error {
 		&po.Block{},
 		&po.Transaction{},
 		&po.TransactionLog{},
+		&po.BlockSyncRecord{},
 	)
 }

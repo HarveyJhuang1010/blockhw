@@ -48,6 +48,8 @@ type Config struct {
 	Database *DatabaseConfig `mapstructure:"database"`
 	Rest     *RestConfig     `mapstructure:"rest"`
 	Ethereum *Ethereum       `mapstructure:"ethereum"`
+	Worker   *WorkerConfig   `mapstructure:"worker"`
+	Nats     *NatsConfig     `mapstructure:"nats"`
 }
 
 func GetConfig() *Config {
@@ -131,4 +133,20 @@ func (cfg *DatabaseConfig) DSN() string {
 
 type Ethereum struct {
 	Endpoint string `mapstructure:"endpoint"`
+}
+
+type WorkerConfig struct {
+	StartNumber uint64 `mapstructure:"start_number"`
+	DelayMinute int    `mapstructure:"delay_minute"`
+	MaxWorkers  int64  `mapstructure:"max_workers"`
+}
+
+type NatsConfig struct {
+	Host       string  `mapstructure:"host" validate:"ipv4"`
+	ClientPort int     `mapstructure:"client_port" validate:"gte=1,lte=65535"`
+	Password   *string `mapstructure:"password"`
+}
+
+func (cfg *NatsConfig) GetURL() string {
+	return fmt.Sprintf("nats://%s:%d", cfg.Host, cfg.ClientPort)
 }
