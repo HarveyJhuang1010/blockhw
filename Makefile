@@ -12,11 +12,12 @@ clean:
 
 build-linux: clean
 	GOOS=linux go build -o ${BUILD_DIR}/api -v ./cmd/api/main.go
+	GOOS=linux go build -o ${BUILD_DIR}/indexer -v ./cmd/indexer/main.go
 
 up-local: build-linux
-	@echo "deploy api"
+	@echo "start services"
 	@docker-compose -f docker-compose.yaml up --build -d
 
 down-local:
-	@echo "stop api"
+	@echo "stop services"
 	@docker-compose -f docker-compose.yaml down

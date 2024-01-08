@@ -3,13 +3,25 @@ version: "3"
 services:
   api:
     build:
-        context: .
-        dockerfile: ./docker/api/Dockerfile
+      context: .
+      dockerfile: ./docker/api/Dockerfile
     container_name: block_api
     restart: always
     depends_on:
       postgres:
         condition: service_healthy
+    network_mode: "host"
+  indexer:
+    build:
+      context: .
+      dockerfile: ./docker/indexer/Dockerfile
+    container_name: block_indexer
+    restart: always
+    depends_on:
+      postgres:
+        condition: service_healthy
+      nats:
+        condition: service_started
     network_mode: "host"
   postgres:
     image: postgres:16.1-alpine
@@ -29,7 +41,7 @@ services:
       POSTGRES_PASSWORD: postgres
       PGDATA: /var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d postgres" ]
       interval: 60s
       timeout: 60s
       retries: 5
@@ -37,5 +49,12 @@ services:
       - block_data_volume:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+  nats:
+    image: nats
+    container_name: block_nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    command: "--http_port 8222 --js"
 volumes:
   block_data_volume:
