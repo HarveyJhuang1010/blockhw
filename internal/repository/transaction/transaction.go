@@ -17,19 +17,19 @@ func newTransactionRepo(in digIn) bo.TransactionRepo {
 		in: in,
 	}
 }
-func (b *transactionRepo) GetTransactions(ctx context.Context, blockNum uint64) ([]*po.Transaction, error) {
+func (t *transactionRepo) GetTransactions(ctx context.Context, blockNum uint64) ([]*po.Transaction, error) {
 	var res []*po.Transaction
-	if err := b.in.RDB.Where("block_num = ?", blockNum).Preload("Logs").Find(&res).Error; err != nil {
+	if err := t.in.RDB.Where("block_num = ?", blockNum).Preload("Logs").Find(&res).Error; err != nil {
 		return nil, errors.WithStack(err)
 	}
 
 	return res, nil
 }
 
-func (b *transactionRepo) GetTransactionDetail(ctx context.Context, txHash string) (*po.Transaction, error) {
+func (t *transactionRepo) GetTransactionDetail(ctx context.Context, txHash string) (*po.Transaction, error) {
 	var res po.Transaction
 
-	if err := b.in.RDB.Where("tx_hash = ?", txHash).Preload("Logs").First(&res).Error; err != nil {
+	if err := t.in.RDB.Where("tx_hash = ?", txHash).Preload("Logs").First(&res).Error; err != nil {
 		return nil, errors.WithStack(err)
 	}
 
