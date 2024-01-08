@@ -13,7 +13,7 @@ type BlockRepo interface {
 	GetBlockDetail(ctx context.Context, blockNum uint64) (*po.Block, error)
 	SyncBlock(ctx context.Context, block *po.Block) error
 	SaveBlockSyncRecord(ctx context.Context, record *po.BlockSyncRecord) error
-	GetBlockSyncRecord(ctx context.Context, blockNum uint64) (*po.BlockSyncRecord, error)
+	GetMinUnSyncRecord(ctx context.Context) (*po.BlockSyncRecord, error)
 	GetUnConfirmedRecord(ctx context.Context, blockNum uint64) ([]*po.BlockSyncRecord, error)
 }
 

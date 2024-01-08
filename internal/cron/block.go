@@ -26,22 +26,21 @@ func newBlockSyncTask(in digIn) bo.CronTask {
 }
 
 func (t *blockSyncTask) Schedule() string {
-	//return "0 */3 * * * *" // 3 minutes for test
 	return "0 * * * * *"
 }
 
 func (t *blockSyncTask) Run() {
 	ctx := appcontext.GetContext()
 	if currentBlock == 0 {
-		latestBlockInDB, err := t.in.BlockRepo.GetLatestBlocks(ctx, 1)
+		latestBlockInDB, err := t.in.BlockRepo.GetMinUnSyncRecord(ctx)
 		if err != nil {
 			appcontext.GetLogger().Error("get latest block failed", zap.Error(err))
 			return
 		}
-		if len(latestBlockInDB) == 0 {
+		if latestBlockInDB == nil {
 			currentBlock = config.GetConfig().Worker.StartNumber
 		} else {
-			currentBlock = latestBlockInDB[0].Number
+			currentBlock = latestBlockInDB.Number
 		}
 	}
 

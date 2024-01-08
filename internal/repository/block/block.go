@@ -75,10 +75,10 @@ func (b *blockRepo) SaveBlockSyncRecord(ctx context.Context, record *po.BlockSyn
 	return nil
 }
 
-func (b *blockRepo) GetBlockSyncRecord(ctx context.Context, blockNum uint64) (*po.BlockSyncRecord, error) {
+func (b *blockRepo) GetMinUnSyncRecord(ctx context.Context) (*po.BlockSyncRecord, error) {
 	var res po.BlockSyncRecord
 
-	if err := b.in.RDB.Where("number = ?", blockNum).First(&res).Error; err != nil {
+	if err := b.in.RDB.Where("status = ?", "created").First(&res).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return nil, nil
 		}
