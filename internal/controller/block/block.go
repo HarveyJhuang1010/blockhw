@@ -20,7 +20,16 @@ func newBlockController(in digIn) bo.BlockController {
 }
 
 func (b *blockController) GetLatestBlocks(ginCtx *gin.Context) {
-	limit := ginCtx.GetInt("limit")
+	// get query param
+	q := ginCtx.Query("limit")
+	limit, err := strconv.Atoi(q)
+	if err != nil {
+		appcontext.GetLogger().Error("GetBlockDetail Failed", zap.Error(err))
+		ginCtx.JSON(400, gin.H{
+			"error": "invalid limit",
+		})
+		return
+	}
 	if limit == 0 {
 		limit = 10
 	}

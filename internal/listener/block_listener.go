@@ -122,7 +122,7 @@ func (w *workflowListener) handleMessage(ctx context.Context, msg bo.NatsMsg) {
 		return
 	}
 	logger = logger.With(zap.String("subject", rawMsg.Subject))
-	logger.Info("receive msg", zap.ByteString("data", rawMsg.Data))
+	//logger.Info("receive msg", zap.ByteString("data", rawMsg.Data))
 
 	var blockNum uint64
 	if err := json.Unmarshal(rawMsg.Data, &blockNum); err != nil {

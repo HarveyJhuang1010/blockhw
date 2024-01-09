@@ -15,8 +15,7 @@ type blockSyncTask struct {
 }
 
 var (
-	_            bo.CronTask = (*blockSyncTask)(nil)
-	currentBlock uint64
+	_ bo.CronTask = (*blockSyncTask)(nil)
 )
 
 func newBlockSyncTask(in digIn) bo.CronTask {
@@ -31,6 +30,7 @@ func (t *blockSyncTask) Schedule() string {
 
 func (t *blockSyncTask) Run() {
 	ctx := appcontext.GetContext()
+	var currentBlock uint64
 	if currentBlock == 0 {
 		latestBlockInDB, err := t.in.BlockRepo.GetMinUnSyncRecord(ctx)
 		if err != nil {
@@ -49,6 +49,8 @@ func (t *blockSyncTask) Run() {
 		appcontext.GetLogger().Error("get block number failed", zap.Error(err))
 		return
 	}
+
+	appcontext.GetLogger().Info("start sync block", zap.Uint64("current", currentBlock), zap.Uint64("max", maxNumber))
 
 	for currentBlock <= maxNumber {
 		rc := &po.BlockSyncRecord{Number: currentBlock, Status: "created"}

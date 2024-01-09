@@ -29,7 +29,7 @@ ethereum:
   endpoint: https://data-seed-prebsc-2-s3.binance.org:8545/
 
 worker:
-  start_number: 1
+  start_number: 36684200
   delay_minute: 1
   max_workers: 5
 
